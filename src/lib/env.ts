@@ -17,7 +17,7 @@ export const env = {
     }
     return secret;
   },
-  imageProvider: (process.env.IMAGE_STORAGE_PROVIDER ?? "local") as "local" | "cloudinary",
+  imageProvider: (process.env.IMAGE_STORAGE_PROVIDER ?? "local") as "local" | "cloudinary" | "imagekit",
   imageStorageUrl: process.env.IMAGE_STORAGE_URL ?? "",
   imageStorageApiKey: process.env.IMAGE_STORAGE_API_KEY ?? "",
   paymentSecretKey: process.env.PAYMENT_SECRET_KEY ?? "",

@@ -16,6 +16,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       { protocol: "https", hostname: "images.unsplash.com" },
       { protocol: "https", hostname: "res.cloudinary.com" },
+      { protocol: "https", hostname: "ik.imagekit.io" },
       ...extraImageHosts.map((hostname) => ({ protocol: "https" as const, hostname })),
     ],
   },

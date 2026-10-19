@@ -63,7 +63,31 @@ async function storeCloudinary(file: File): Promise<StoredImage> {
   return { url: data.secure_url, thumbnail };
 }
 
+/** Server-side upload to ImageKit. IMAGE_STORAGE_API_KEY is the ImageKit private key. */
+async function storeImageKit(file: File, ext: string): Promise<StoredImage> {
+  const privateKey = env.imageStorageApiKey;
+  if (!privateKey) throw new ApiError("Cloud image storage is not configured", 503);
+  const form = new FormData();
+  form.append("file", file);
+  form.append("fileName", `${randomUUID()}.${ext}`);
+  form.append("folder", "/swarnika/products");
+  form.append("useUniqueFileName", "false");
+  const res = await fetch(env.imageStorageUrl || "https://upload.imagekit.io/api/v1/files/upload", {
+    method: "POST",
+    headers: { Authorization: `Basic ${Buffer.from(`${privateKey}:`).toString("base64")}` },
+    body: form,
+    cache: "no-store",
+  });
+  if (!res.ok) {
+    console.error("[storage] upload failed", res.status, await res.text().catch(() => ""));
+    throw new ApiError("Image upload failed", 502);
+  }
+  const data = (await res.json()) as { url: string };
+  return { url: data.url, thumbnail: `${data.url}?tr=w-480,h-600,q-80` };
+}
+
 export async function storeImage(file: File): Promise<StoredImage> {
   const ext = assertImage(file);
+  if (env.imageProvider === "imagekit") return storeImageKit(file, ext);
   return env.imageProvider === "cloudinary" ? storeCloudinary(file) : storeLocal(file, ext);
 }
