@@ -5,7 +5,7 @@ import { JsonLd } from "@/components/common/json-ld";
 import { ProductCarousel } from "@/components/home/product-carousel";
 import { ProductDetails } from "@/components/product/product-details";
 import { ReviewsSection } from "@/components/product/reviews-section";
-import { absoluteUrl } from "@/lib/utils";
+import { absoluteUrl, shareImage } from "@/lib/utils";
 import { getProductBySlug, getRelatedProducts } from "@/services/product.service";
 import { getProductReviews } from "@/services/review.service";
 import { getSettings } from "@/services/settings.service";
@@ -18,7 +18,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!p) return { title: "Product not found", robots: { index: false } };
   const title = p.seo.title || p.name;
   const description = p.seo.description || p.shortDescription || p.description.slice(0, 160);
-  const og = p.seo.ogImage || p.images[0]?.url;
+  const ogSrc = p.seo.ogImage || p.images[0]?.url;
+  const og = ogSrc ? shareImage(ogSrc) : undefined;
   return {
     title: { absolute: title.includes("|") ? title : `${title} | Swarnika` },
     description,

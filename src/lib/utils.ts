@@ -45,3 +45,9 @@ export function absoluteUrl(path = "/"): string {
 export function clamp(n: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, n));
 }
+
+/** 1200×630 share-card crop for ImageKit URLs; other URLs pass through unchanged. */
+export function shareImage(src: string): string {
+  if (!src.startsWith("https://ik.imagekit.io/")) return src;
+  return `${src.split("?")[0]}?tr=w-1200,h-630,fo-auto,q-80`;
+}

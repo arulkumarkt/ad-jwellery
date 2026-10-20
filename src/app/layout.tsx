@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, Manrope } from "next/font/google";
 import { AppProviders } from "@/components/providers/app-providers";
 import { getSettings } from "@/services/settings.service";
-import { absoluteUrl } from "@/lib/utils";
+import { absoluteUrl, shareImage } from "@/lib/utils";
 import "./globals.css";
 
 const display = Cormorant_Garamond({
@@ -37,10 +37,10 @@ export async function generateMetadata(): Promise<Metadata> {
       siteName: s?.storeName ?? "Swarnika",
       title,
       description,
-      images: s?.seo.ogImage ? [{ url: s.seo.ogImage }] : undefined,
+      images: s?.seo.ogImage ? [{ url: shareImage(s.seo.ogImage), width: 1200, height: 630 }] : undefined,
       locale: "en_IN",
     },
-    twitter: { card: "summary_large_image", title, description },
+    twitter: { card: "summary_large_image", title, description, images: s?.seo.ogImage ? [shareImage(s.seo.ogImage)] : undefined },
     alternates: { canonical: "/" },
   };
 }
